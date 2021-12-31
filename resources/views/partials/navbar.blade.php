@@ -55,12 +55,12 @@
                                 <li><a href="/profile/{{ auth()->user()->id }}">Profil</a></li>
                                 <li><a href="/transactio/upload-proofment">Transaction</a></li>
                               
-                              <li>
-                                <form class="d-inline mt-5" action="/logout" method="post">
-                                    @csrf
-                                    <button onclick="return confirm('Are You Sure Want To Log Out ?')" class="btn border-0 py-1 ml-2 text-dark" style="background-color: transparent; text-transform: capitalize;" type="submit" id="btnlogut">Logout <i class="bi bi-box-arrow-right"></i></button>
-                                </form>
-                              </li>
+                                <li>
+                                  <form class="d-inline mt-5" action="/logout" method="post">
+                                      @csrf
+                                      <button onclick="return confirm('Are You Sure Want To Log Out ?')" class="btn border-0 py-1 ml-2 text-dark" style="background-color: transparent; text-transform: capitalize;" type="submit" id="btnlogut">Logout <i class="bi bi-box-arrow-right"></i></button>
+                                  </form>
+                                </li>
                             </ul>
                           </li>
                         </ul>

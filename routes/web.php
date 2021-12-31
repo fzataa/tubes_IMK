@@ -17,6 +17,7 @@ use App\Http\Controllers\LainlainController;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\CheckController;
+use App\Http\Controllers\ChartController;
 use App\Models\Transaction;
 use App\Models\Cart;
 use App\Models\Review;
@@ -46,6 +47,9 @@ Route::get('/faq', function() {
         ]);
     }
 });
+
+Route::get('/chart', [ChartController::class, 'index']);
+
 
 // Mail
 Route::post('/verify-email', [MailCOntroller::class, 'sendEmail']); 
@@ -124,6 +128,7 @@ Route::get('/invoice/{id}', [TransactionController::class, 'invoice'])->middlewa
 Route::post('/upload-transaction-proofment', [TransactionController::class, 'upbukti'])->middleware('auth');
 
 
+
 Route::get('/review', function () {
     
     $rev = Review::all();
@@ -156,7 +161,7 @@ Route::get('/cities/{province_id}', [CheckController::class, 'getcities'])->midd
 
 Route::post('/add-review-product', [ReportController::class, 'add'])->middleware('auth');
 
-Route::get('/export-excel', [TransactionController::class, 'exportToExcel']);
+Route::post('/export-excel', [TransactionController::class, 'exportToExcel']);
 
 
 Route::get('/blabla', function() {

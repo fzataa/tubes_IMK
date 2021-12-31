@@ -11,7 +11,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use Dompdf\Adapter\CPDF;      
+use Dompdf\Dompdf;
+use Dompdf\Exception;
 use Excel;
+use PDF;
 
 class TransactionController extends Controller
 {
@@ -164,10 +168,10 @@ class TransactionController extends Controller
         $data = [
             'name' => $r->name,
             'phone' => $r->phone,
-            'e-mail' => $r->e_mail,
-            'product-name' => $r->product_name,
+            'e_mail' => $r->e_mail,
+            'product_name' => $r->product_name,
             'quantity' => $r->quantity,
-            'address-location' => $r->address_location,
+            'address_location' => $r->address_location,
             'city' => $r->city,
             'province' => $r->province,
             'courier' => $r->courier,
@@ -192,10 +196,26 @@ class TransactionController extends Controller
     }
 
 
-    public function exportToExcel() 
+    public function exportToExcel(Request $r) 
     {
-        return Excel::download(new TransactionExport, 'Transaction-Report.xlsx');
+        if($r->status == "Excel") {
+            return Excel::download(new TransactionExport($r->date_from, $r->date_to), 'Transaction-Report.xlsx');
+        }
+        elseif ($r->status == "PDF") {
+            // $var = Transactiondata::getAllTransactionData($r->date_from, $r->date_to);
+            // return view('report.pdf', [
+            //     'judul' => "Transaction Report",
+            //     'data' => Transactiondata::getAllTransactionData($r->date_from, $r->date_to),
+            // ]);
+            $data = [
+                'judul' => "Transaction Report",
+                'data' => Transactiondata::getAllTransactionData($r->date_from, $r->date_to),
+            ];
+            $pdf = PDF::loadView('report.pdf', $data)->setPaper('letter', 'landscape');
+            return $pdf->download('Transaction-Report.pdf');
+        }
     }
+
 
 
 

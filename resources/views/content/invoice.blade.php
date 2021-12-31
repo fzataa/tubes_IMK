@@ -112,6 +112,25 @@
               <button type="button" class="btn btn-light border-0 mt-0" style="background-color: transparent; float: right; margin-right: 0%" data-bs-dismiss="alert" aria-label="Close" onclick="document.getElementById('suc').style.display = 'none' "><i class="bi bi-x-lg"></i></button>
           </div>
         @endif
+        @php
+          $carbon = false;
+          $now = Carbon\Carbon::today();
+          $day = $tran->created_at->addDays(3);
+          if ($now->gte($day)) {
+            $carbon = true;
+          }else {
+            $carbon = false;
+          }
+        @endphp
+        @if ($tran->status == "Waiting For Verification")
+          @if($carbon)
+          <div class="alert alert-danger alert-dismissible fade show" role="alert" id="suc">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+              Sorry, no response for your request please chat admin : <a href="https://api.whatsapp.com/send?phone=+628566219120&amp;text=Hi%20Admin%20Nastshopp,%20My%20transaction%20has%20reach%20the%20time%20limit%20I%20want%20to%20ask%20...">+62 856 6219 120</a>
+            <button type="button" class="btn btn-light border-0 mt-0" style="background-color: transparent; float: right; margin-right: 0%" data-bs-dismiss="alert" aria-label="Close" onclick="document.getElementById('suc').style.display = 'none' "><i class="bi bi-x-lg"></i></button>
+          </div>
+          @endif
+        @endif
         {{-- <a class="text-light text-center bg-primary rounded text-danger mb-3 border-0" style="font-size:20px" onclick="">Back To Order List</a> --}}
         <a href="/transactio/upload-proofment" class="btn btn-primary mb-3 px-2 py-1" style="padding: 0"><i class="bi bi-arrow-left"></i>Back To Order List</a>
         <div class="border p-4 rounded" role="alert">
@@ -121,6 +140,12 @@
               <div class="mycontent-right">
                 <table class="table mb-3">
                   <tbody>
+                    <tr>
+                      <th>
+                        Order Date
+                      </th>
+                      <td>{{ Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $tran->created_at)->format('D, d F Y') }}&nbsp;({{ Carbon\Carbon::parse($tran->created_at)->diffForHumans() }})</td>
+                    </tr>
                     <tr>
                       <th>Product Name</th>
                       @if ($tran->product->category == "Album")
@@ -168,7 +193,13 @@
         </div>
         
         <div class="border p-4 rounded mt-4" role="alert">
-          <p class="text-dark">Status : {{ $tran->status }}</p>
+          @if ($tran->status == "Waiting For Verification")
+            <p class="text-dark">Status : {{ $tran->status }} <span class="text-danger">Max 3x24 Hours</span></p>
+          @elseif ($tran->status == "On Shipping")
+            <p class="text-dark">Status : {{ $tran->status }} <span class="text-danger">Wait 3x24 Hours For Receipt Number</span></p>
+          @else
+            <p class="text-dark">Status : {{ $tran->status }}</p>
+          @endif
         </div>
         
         
@@ -291,7 +322,7 @@
                 <button type="submit" class="btn btn-primary mt-3">Upload Image</button>
               @else
                 <p class="mt-5 text-danger">Upload Your Payment Proofment*</p>
-                {{-- <p class="mt-3 text-danger">If Within 24 Hours There Is No proof Of Payment, The Transaction Will Automatically Be Canceled</p> --}}
+                <p class="mt-3 text-danger">If Within 24 Hours There Is No proof Of Payment, The Transaction Will Automatically Be Canceled</p>
                 @if ($tran->bukti)
                 <img src="{{ asset('storage/' . $tran->bukti) }}" class="img-preview img-fluid" id="myImg" style="width:200px; height:200px;" alt=""><br>
                 @else

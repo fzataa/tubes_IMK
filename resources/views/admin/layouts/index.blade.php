@@ -21,6 +21,10 @@
       <link rel="stylesheet" type="text/css" href="{{ asset('admin/css/style.css') }}">
 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+      <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+      <script src="https://cdn.datatables.net/datetime/1.1.1/js/dataTables.dateTime.min.js"></script>
 
       <link href="{{ asset('dataTables') }}/datatables.min.css" rel="stylesheet" />
         <script type="text/javascript">
@@ -107,6 +111,65 @@
 
     });
   });
+
+var minDate, maxDate;
+ 
+ // Custom filtering function which will search data in column four between two values
+ $.fn.dataTable.ext.search.push(
+     function( settings, data, dataIndex ) {
+         var min = minDate.val();
+         var max = maxDate.val();
+         var date = new Date( data[4] );
+  
+         if (
+             ( min === null && max === null ) ||
+             ( min === null && date <= max ) ||
+             ( min <= date   && max === null ) ||
+             ( min <= date   && date <= max )
+         ) {
+             return true;
+         }
+         return false;
+     }
+ );
+  
+ $(document).ready(function() {
+     // Create date inputs
+     minDate = new DateTime($('#min'), {
+         format: 'MMMM Do YYYY'
+     });
+     maxDate = new DateTime($('#max'), {
+         format: 'MMMM Do YYYY'
+     });
+  
+     // DataTables initialisation
+     var table = $('#example').DataTable();
+  
+     // Refilter the table
+     $('#min, #max').on('change', function () {
+         table.draw();
+     });
+ });
+
+ $(document).ready(function() {
+  $('#ex').click(function() {
+    $('#sta').val("Excel");
+  });
+  $('#pd').click(function() {
+    $('#sta').val("PDF");
+  });
+ });
+
+
+
+
+
+
+
+
+
+
+  
 
 
 

@@ -3,6 +3,18 @@
 @section('section')
 
 <style>
+    a:link {
+      color: white;
+    }
+
+    a:visited {
+      color: white;
+    }
+    
+    a:hover {
+      color: white;
+    }
+
     .badge {
       position: relative;
       display: inline-block;
@@ -58,13 +70,22 @@
                     </div>
                     <div class="card-block table-border-style">
                       @if ($detail == "Arrived")
-                        <form action="/export-excel" method="get" class="mb-3">
+                        <form action="/export-excel" method="post" class="mb-3">
                           @csrf
-                          <button class="btn btn-primary">Export To Excel</button>
+                          <input type="date" name="date_from" class="form-control" required>
+                          <input type="date" name="date_to" class="form-control" required>
+                          <a id="btt" class="btn btn-primary" onclick="document.getElementById('drp').style.display = 'block'">Export To</a>
+                          <ul style="display: none;" class="dropdown" id="drp">
+                            <li><button type="submit" id="ex">Excel</button></li>
+                            <li><button type="submit" id="pd">PDF</button></li>
+                            <li><button type="button"  onclick="document.getElementById('drp').style.display = 'none'">close</button></li>
+                          </ul>
+                            <input type="hidden" name="status" value="" id="sta">
+                          </div>
                         </form>
                       @endif
                         <div class="table-responsive">
-                            <table class="table" id="datatables">
+                            <table class="table" id="example">
                                 <thead>
                                   <tr>
                                     <th>#</th>
@@ -74,7 +95,9 @@
                                     <th>Address</th>
                                     <th>Quantity</th>
                                     <th>Price</th>
-                                    <th>Tracking Number</th>
+                                    @if ($detail == "On Shipping")
+                                      <th>Tracking Number</th>
+                                    @endif
                                     <th>Date</th>
                                     <th>Action</th>
                                   </tr>
@@ -94,12 +117,8 @@
                                         <td>Rp.{{ $p->total }}</td>
                                         @if ($p->status == "On Shipping")
                                           <td>{{ $p->resi }}</td>
-                                        @elseif($p->status == "Arrived")
-                                          <td>Product Arrived Already</td>
-                                          @else
-                                          <td>Not Shipping Yet</td>
                                         @endif
-                                        <td>{{ $p->tanggal }}</td>
+                                        <td>{{ Carbon\Carbon::parse($p->tanggal)->diffForHumans() }}</td>
                                         <td>
                                             <a href="/transaction/waiting-for-verification-or-on-shipping/{{ $p->id }}" class="badge bg-info ti-eye border-0"><span class="tooltiptext">Show</span></a>
                                         </td>

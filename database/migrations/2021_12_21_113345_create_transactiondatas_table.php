@@ -17,10 +17,10 @@ class CreateTransactiondatasTable extends Migration
             $table->id();
             $table->text('name');
             $table->text('phone');
-            $table->text('e-mail');
-            $table->text('product-name');
+            $table->text('e_mail');
+            $table->text('product_name');
             $table->text('quantity');
-            $table->text('address-location');
+            $table->text('address_location');
             $table->text('city');
             $table->text('province');
             $table->text('courier');

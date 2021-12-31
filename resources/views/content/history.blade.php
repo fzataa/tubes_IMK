@@ -45,6 +45,33 @@
                 @endif
                 
                 @foreach ($tran as $ker)
+
+                  @if ($ker->status == "Upload Payment Proofment")
+                    @php
+                      $del = false;
+                      $now = Carbon\Carbon::now();
+                      $date = $ker->created_at->addDays(1);
+                      if($now->gte($date)){
+                        $del = true;
+                      }else {
+                        $del = false;
+                      }
+                    @endphp
+                    @if ($del)
+                      @php
+                      $var = App\Models\Transaction::where([
+                          ['user_id','=', auth()->user()->id],
+                          ['id','=', $ker->id],
+                          ['status','=', 'Upload Payment Proofment'],
+                      ])->first();
+
+                      App\Models\Transaction::destroy($var->id);
+
+                      @endphp
+                    
+                    @endif
+                  @endif
+
                 @if ($ker->status != " ")
                 <tr>
                   <td class="product-thumbnail">
